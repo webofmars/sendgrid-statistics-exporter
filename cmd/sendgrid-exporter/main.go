@@ -234,6 +234,13 @@ func (c *Collector) Collect(ch chan<- prometheus.Metric) {
 		return
 	}
 
+	if len(metrics) == 0 {
+		log.Println(err)
+		c.up.Set(0)
+		ch <- c.up
+		return
+	}
+
 	c.up.Set(1)
 	ch <- c.up
 
