@@ -19,7 +19,7 @@ spec:
     spec:
       containers:
       - name: sendgrid-exporter
-        image: registry.gitlab.com/countsheep123/sendgrid-exporter:latest
+        image: countsheep123/sendgrid-exporter:latest
         imagePullPolicy: Always
         ports:
         - containerPort: 18080
