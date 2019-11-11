@@ -3,11 +3,7 @@
 ## install
 
 ```
-go get -u gitlab.com/countsheep123/sendgrid-exporter/...
-```
-
-```
-docker pull countsheep123/sendgrid-exporter
+docker pull riccardopomato/sendgrid-statistics-exporter
 ```
 
 ## environment
