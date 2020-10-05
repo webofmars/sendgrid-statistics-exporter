@@ -23,9 +23,9 @@ var (
 )
 
 var (
-        listenAddr      = os.Getenv("LISTEN_ADDR")
-        metricsEndpoint = os.Getenv("METRICS_ENDPOINT")
-        apiKey          = os.Getenv("SENDGRID_API_KEY")
+	listenAddr      = os.Getenv("LISTEN_ADDR")
+	metricsEndpoint = os.Getenv("METRICS_ENDPOINT")
+	apiKey          = os.Getenv("SENDGRID_API_KEY")
 )
 
 func init() {
