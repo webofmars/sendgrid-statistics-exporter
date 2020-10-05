@@ -676,7 +676,7 @@ func collectMetrics(aggregadedby string) ([]*Statistics, error) {
 	case http.StatusOK:
 		// do nothing
 	case http.StatusTooManyRequests:
-		return nil, fmt.Errorf("ireached API rate limit")
+		return nil, fmt.Errorf("reached API rate limit")
 	default:
 		return nil, fmt.Errorf("invalid request")
 	}
