@@ -13,6 +13,7 @@ import (
 	"syscall"
 	"time"
 
+	"github.com/jinzhu/now"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"github.com/prometheus/common/version"
@@ -23,9 +24,9 @@ var (
 )
 
 var (
-        listenAddr      = os.Getenv("LISTEN_ADDR")
-        metricsEndpoint = os.Getenv("METRICS_ENDPOINT")
-        apiKey          = os.Getenv("SENDGRID_API_KEY")
+	listenAddr      = os.Getenv("LISTEN_ADDR")
+	metricsEndpoint = os.Getenv("METRICS_ENDPOINT")
+	apiKey          = os.Getenv("SENDGRID_API_KEY")
 )
 
 func init() {
@@ -639,22 +640,29 @@ type Statistics struct {
 	Stats []*Stat `json:"stats,omitempty"`
 }
 
-func collectMetrics(aggregadedby string) ([]*Statistics, error) {
-
+func collectMetrics(aggregated_by string) ([]*Statistics, error) {
 	u, err := url.Parse("https://api.sendgrid.com/v3/stats")
 	if err != nil {
 		return nil, err
 	}
 
-	today := time.Now().Format("2006-01-02")
-
 	query := url.Values{}
-	start := today     // YYYY-MM-DD
-	end := today       // YYYY-MM-DD
-	by := aggregadedby //"day"    // day|week|month
-	query.Set("start_date", start)
-	query.Set("end_date", end)
-	query.Set("aggregated_by", by)
+	end_date := time.Now().Format("2006-01-02") // YYYY-MM-DD
+
+	var start_date string
+	if aggregated_by == "day" {
+		start_date = end_date
+	} else if aggregated_by == "week" {
+		start_date = now.BeginningOfWeek().Format("2006-01-02")
+	} else if aggregated_by == "month" {
+		start_date = now.BeginningOfMonth().Format("2006-01-02")
+	} else {
+		return nil, fmt.Errorf("Expected aggregated_by param to be one of \"day\", \"week\", and \"month\" but was %s", aggregated_by)
+	}
+
+	query.Set("start_date", start_date)
+	query.Set("end_date", end_date)
+	query.Set("aggregated_by", aggregated_by)
 	u.RawQuery = query.Encode()
 
 	req, err := http.NewRequest(http.MethodGet, u.String(), nil)
@@ -676,7 +684,7 @@ func collectMetrics(aggregadedby string) ([]*Statistics, error) {
 	case http.StatusOK:
 		// do nothing
 	case http.StatusTooManyRequests:
-		return nil, fmt.Errorf("ireached API rate limit")
+		return nil, fmt.Errorf("reached API rate limit")
 	default:
 		return nil, fmt.Errorf("invalid request")
 	}
