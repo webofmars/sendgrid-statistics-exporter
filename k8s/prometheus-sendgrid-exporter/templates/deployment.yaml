@@ -35,7 +35,7 @@ spec:
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           envFrom:
           - configMapRef:
-            name: {{ include "prometheus-sendgrid-exporter.fullname" . }}
+              name: {{ include "prometheus-sendgrid-exporter.fullname" . }}
           ports:
             - name: http
               containerPort: {{ .Values.service.port }}

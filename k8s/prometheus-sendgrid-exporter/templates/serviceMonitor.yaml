@@ -7,6 +7,6 @@ metadata:
 spec:
   selector:
     matchLabels:
-      {{- include "prometheus-sendgrid-exporter.labels" . | nindent 4 }}
+      {{- include "prometheus-sendgrid-exporter.labels" . | nindent 6 }}
   endpoints:
   - port: http
