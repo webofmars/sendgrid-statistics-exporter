@@ -1,0 +1,12 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: {{ include "prometheus-sendgrid-exporter.fullname" . }}
+  labels:
+    {{- include "prometheus-sendgrid-exporter.labels" . | nindent 4 }}
+spec:
+  selector:
+    matchLabels:
+      {{- include "prometheus-sendgrid-exporter.labels" . | nindent 4 }}
+  endpoints:
+  - port: http
